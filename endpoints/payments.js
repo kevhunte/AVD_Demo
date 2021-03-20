@@ -24,15 +24,7 @@ payments.post('/', (req, res) => {
         res.status(201).json({msg: confirmationNumber})
     }
     else {
-        if (!amount && !paid_by) {
-            res.status(400).json({msg: `Failed to post payment. Missing information`})
-        }
-        else if (!amount){
-            res.status(400).json({msg: `Failed to post payment. Missing amount`})
-        }
-        else {
-            res.status(400).json({msg: `Failed to post payment. Missing payment individual`})
-        }
+        res.status(400).json({msg: `Failed to post payment. Missing information`})
     }
     
 })
@@ -58,7 +50,7 @@ payments.patch('/update_payment/:id',(req,res) => {
     }
 
     if (typeof bearerHeader !== 'undefined') {
-        const {_, token} = bearerHeader.split(' ')
+        const [_, token] = bearerHeader.split(' ')
         if (typeof token === 'undefined') {
             res.status(401).json({msg: 'Unauthorized'})
         }
