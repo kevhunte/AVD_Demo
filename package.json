@@ -2,7 +2,7 @@
   "name": "avd_demo",
   "version": "1.0.0",
   "private": true,
-  "description": "Automated Vulnerability Detect Demo",
+  "description": "Automated Vulnerability Detection Demo",
   "main": "index.js",
   "scripts": {
     "serve": "nodemon index.js",
@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "mocha": "^8.3.2",
+    "node-fetch": "^2.6.1",
     "nodemon": "^2.0.7"
   }
 }
