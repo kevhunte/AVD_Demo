@@ -39,8 +39,22 @@ describe('Payment Happy Path',() => {
         const json = await res.json()
 
         assert.strictEqual(res.status, 201, 'status code not returned as expected')
-        assert(json.msg.length > 0, `Expected uuid but received - ${json.msg}`)
+        assert.ok(json.msg.length > 0, `Expected uuid but received - ${json.msg}`)
+    })
+
+    it('Update Payment', async () => {
+        const amount = 5.23
+        const res = await fetch(url+'/update_payment/a4b4bbba-bf79-42c5-9fb1-631a1398d3b4',{
+            method: 'patch',
+            body: JSON.stringify({amount}),
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer John` }
+        })
+
+        const json = await res.json()
+
+        assert.strictEqual(res.status, 201, 'status code not returned as expected')
+        assert.strictEqual(json.msg, `Updated payment from 15.23 to ${amount}`, `Unexpected response returned`)
     })
 })
 
-describe('Payments Negative Path Suite',() => {})
+describe('Payments Negative Path',() => {})
