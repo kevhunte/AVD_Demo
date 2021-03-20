@@ -20,7 +20,7 @@ describe('Login Happy Path', () => {
     it('Load login page', async () => {
         const res = await fetch(url)
 
-        assert.strictEqual(res.status, 200, '200 OK not returned for homepage')
+        assert.strictEqual(res.status, 200, '200 OK not returned for login page')
     })
     
 })
