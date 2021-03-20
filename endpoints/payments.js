@@ -11,21 +11,8 @@ var payments_db = {
     "521075c9-ffcf-4faf-81c9-cfacb8ae8ac3": { "amount": 82.60, "paid_by": "Bob" }
 }
 
-// TODO: auth checker
-
 payments.get('/', (req, res) => {
     res.status(200).send('Get Payments')
-})
-
-payments.get('/:id', (req, res) => {
-    const id = req.params.id
-    let payment = payments_db[id]
-    if (!payment) {
-        res.status(404).send(`Payment not found`)
-    }
-    else {
-        res.status(200).send(payment)
-    }
 })
 
 payments.post('/', (req, res) => {
@@ -48,4 +35,44 @@ payments.post('/', (req, res) => {
         }
     }
     
+})
+
+payments.get('/:id', (req, res) => {
+    const id = req.params.id
+    let payment = payments_db[id]
+    if (!payment) {
+        res.status(404).send(`Payment not found`)
+    }
+    else {
+        res.status(200).send(payment)
+    }
+})
+
+payments.patch('/update_payment/:id',(req,res) => {
+    const id = req.params.id
+    const new_amount = req.body.amount
+    const bearerHeader = req.headers['authorization']
+
+    if (typeof new_amount === 'undefined'){
+        res.status(400).send('amount cannot be blank')
+    }
+
+    if (typeof bearerHeader !== 'undefined') {
+        const {_, token} = bearerHeader.split(' ')
+        if (typeof token === 'undefined') {
+            res.status(401).send('Unauthorized')
+        }
+        else {
+            const payment = payments_db[id]
+            if (payment.paid_by === token){ // swap for demo
+                res.status(201).send(`Updated payment from ${payment.amount} to ${new_amount}`)
+            }
+            else {
+                res.status(403).send(`Action forbidden`)
+            }
+        }
+    }
+    else {
+        res.status(400).send('Missing Token')
+    }
 })

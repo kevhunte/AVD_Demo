@@ -15,7 +15,7 @@ login.post('/', (req, res) => {
     const username = req.body.username
     const password = req.body.password
 
-    if (password && username) {
+    if (typeof password !== 'undefined' && typeof username !== 'undefined') {
 
         if(username == user.username && password == user.password){
             res.status(201).send(`Signed in successfully`)
@@ -26,15 +26,7 @@ login.post('/', (req, res) => {
         
     }
     else {
-        if (!username && !password) {
-            res.status(400).send(`Missing username and password`)
-        }
-        else if (!username){
-            res.status(400).send(`Missing username`)
-        }
-        else {
-            res.status(400).send(`missing password`)
-        }
+        res.status(400).send(`Missing username or password`)
     }
     
 })
