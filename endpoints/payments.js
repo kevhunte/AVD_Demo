@@ -21,17 +21,17 @@ payments.post('/', (req, res) => {
 
     if (amount && paid_by) {
         let confirmationNumber = uuidv4()
-        res.status(201).send(`Posted Payment: ${confirmationNumber}`)
+        res.status(201).json({msg: confirmationNumber})
     }
     else {
         if (!amount && !paid_by) {
-            res.status(400).send(`Failed to post payment. Missing information`)
+            res.status(400).json({msg: `Failed to post payment. Missing information`})
         }
         else if (!amount){
-            res.status(400).send(`Failed to post payment. Missing amount`)
+            res.status(400).json({msg: `Failed to post payment. Missing amount`})
         }
         else {
-            res.status(400).send(`Failed to post payment. Missing payment individual`)
+            res.status(400).json({msg: `Failed to post payment. Missing payment individual`})
         }
     }
     
@@ -44,7 +44,7 @@ payments.get('/:id', (req, res) => {
         res.status(404).send(`Payment not found`)
     }
     else {
-        res.status(200).send(payment)
+        res.status(200).json({msg: payment})
     }
 })
 
@@ -54,25 +54,25 @@ payments.patch('/update_payment/:id',(req,res) => {
     const bearerHeader = req.headers['authorization']
 
     if (typeof new_amount === 'undefined'){
-        res.status(400).send('amount cannot be blank')
+        res.status(400).json({msg: 'amount cannot be blank'})
     }
 
     if (typeof bearerHeader !== 'undefined') {
         const {_, token} = bearerHeader.split(' ')
         if (typeof token === 'undefined') {
-            res.status(401).send('Unauthorized')
+            res.status(401).json({msg: 'Unauthorized'})
         }
         else {
             const payment = payments_db[id]
             if (payment.paid_by === token){ // swap for demo
-                res.status(201).send(`Updated payment from ${payment.amount} to ${new_amount}`)
+                res.status(201).json({msg: `Updated payment from ${payment.amount} to ${new_amount}`})
             }
             else {
-                res.status(403).send(`Action forbidden`)
+                res.status(403).json({msg: `Action forbidden`})
             }
         }
     }
     else {
-        res.status(400).send('Missing Token')
+        res.status(400).json({msg: 'Missing Token'})
     }
 })
