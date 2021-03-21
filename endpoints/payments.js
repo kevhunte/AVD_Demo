@@ -33,7 +33,7 @@ payments.get('/:id', (req, res) => {
     const id = req.params.id
     let payment = payments_db[id]
     if (!payment) {
-        res.status(404).send(`Payment not found`)
+        res.status(404).json({msg: `Payment not found`})
     }
     else {
         res.status(200).json({msg: payment})
