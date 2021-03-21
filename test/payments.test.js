@@ -57,4 +57,92 @@ describe('Payment Happy Path',() => {
     })
 })
 
-describe('Payments Negative Path',() => {})
+describe('Payments Negative Path',() => {
+
+    it("404 from Get Payment Endpoint", async () => {
+        const res = await fetch(url+'/Foo')
+
+        const json = await res.json()
+
+        assert.strictEqual(res.status, 404, '400 response not returned from payment endpoint')
+        assert.strictEqual(json.msg, `Payment not found`, `Unexpected response returned`)
+    })
+
+    it("Missing payment amount", async () => {
+        const res = await fetch(url,{
+            method: 'post',
+            body: JSON.stringify({paid_by: 'Tester'}),
+            headers: { 'Content-Type': 'application/json' }
+        })
+
+        const json = await res.json()
+
+        assert.strictEqual(res.status, 400, '400 response not returned from payment endpoint')
+        assert.strictEqual(json.msg, `Failed to post payment. Missing information`, `Unexpected response returned`)
+    })
+
+    it("Missing Creator of Payment", async () => {
+        const res = await fetch(url,{
+            method: 'post',
+            body: JSON.stringify({amount: 5}),
+            headers: { 'Content-Type': 'application/json' }
+        })
+
+        const json = await res.json()
+
+        assert.strictEqual(res.status, 400, '400 response not returned from payment endpoint')
+        assert.strictEqual(json.msg, `Failed to post payment. Missing information`, `Unexpected response returned`)
+    })
+
+    it("Update Payment No Amount", async () => {
+        const res = await fetch(url+'/update_payment/034a7c76-2efb-4b3e-9420-a4bd5830b048',{
+            method: 'patch',
+            body: JSON.stringify({}),
+            headers: { 'Content-Type': 'application/json', 'Authorization': "Bearer Joe" }
+        })
+
+        const json = await res.json()
+
+        assert.strictEqual(res.status, 400, '400 response not returned from payment endpoint')
+        assert.strictEqual(json.msg, `amount cannot be blank`, `Unexpected response returned`)
+    })
+
+    it("Update Payment No Auth Header", async () => {
+        const res = await fetch(url+'/update_payment/034a7c76-2efb-4b3e-9420-a4bd5830b048',{
+            method: 'patch',
+            body: JSON.stringify({amount: 8.00}),
+            headers: { 'Content-Type': 'application/json'}
+        })
+
+        const json = await res.json()
+
+        assert.strictEqual(res.status, 400, '400 response not returned from payment endpoint')
+        assert.strictEqual(json.msg, `Missing Token`, `Unexpected response returned`)
+    })
+
+    it("Update Payment No Token", async () => {
+        const res = await fetch(url+'/update_payment/034a7c76-2efb-4b3e-9420-a4bd5830b048',{
+            method: 'patch',
+            body: JSON.stringify({amount: 16.00}),
+            headers: { 'Content-Type': 'application/json', 'Authorization': "Bearer " }
+        })
+
+        const json = await res.json()
+
+        assert.strictEqual(res.status, 401, '400 response not returned from payment endpoint')
+        assert.strictEqual(json.msg, `Unauthorized`, `Unexpected response returned`)
+    })
+
+    it("Update Payment Invalid User", async () => {
+        const res = await fetch(url+'/update_payment/034a7c76-2efb-4b3e-9420-a4bd5830b048',{
+            method: 'patch',
+            body: JSON.stringify({amount: 1.13}),
+            headers: { 'Content-Type': 'application/json', 'Authorization': "Bearer Bob" }
+        })
+
+        const json = await res.json()
+
+        assert.strictEqual(res.status, 403, '400 response not returned from payment endpoint')
+        assert.strictEqual(json.msg, `Action forbidden`, `Unexpected response returned`)
+    })
+})
