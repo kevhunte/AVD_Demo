@@ -57,9 +57,9 @@ describe('Payment Happy Path',() => {
     })
 })
 
-describe('Payments Negative Path',() => {
+describe('Payment Negative Path',() => {
 
-    it("404 from Get Payment Endpoint", async () => {
+    it("Get Payment 404 response", async () => {
         const res = await fetch(url+'/Foo')
 
         const json = await res.json()
@@ -68,7 +68,7 @@ describe('Payments Negative Path',() => {
         assert.strictEqual(json.msg, `Payment not found`, `Unexpected response returned`)
     })
 
-    it("Missing payment amount", async () => {
+    it("Post Payment Missing payment amount", async () => {
         const res = await fetch(url,{
             method: 'post',
             body: JSON.stringify({paid_by: 'Tester'}),
@@ -81,7 +81,7 @@ describe('Payments Negative Path',() => {
         assert.strictEqual(json.msg, `Failed to post payment. Missing information`, `Unexpected response returned`)
     })
 
-    it("Missing Creator of Payment", async () => {
+    it("Post Payment Missing Creator of Payment", async () => {
         const res = await fetch(url,{
             method: 'post',
             body: JSON.stringify({amount: 5}),
